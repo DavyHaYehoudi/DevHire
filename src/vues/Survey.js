@@ -1,9 +1,10 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import colors from "../utils/style/colors";
 import Loader from "../components/Loader";
+import { SurveyContext } from "../utils/context";
 
 const SurveyContainer = styled.div`
   display: flex;
@@ -29,10 +30,33 @@ const LinkWrapper = styled.div`
     margin-right: 20px;
   }
 `;
-
+const ReplyBox = styled.button`
+  border: none;
+  height: 100px;
+  width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${colors.backgroundLight};
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: ${(props) =>
+    props.isSelected ? `0px 0px 0px 2px ${colors.primary} inset` : "none"};
+  &:first-child {
+    margin-right: 15px;
+  }
+  &:last-of-type {
+    margin-left: 15px;
+  }
+`;
+const ReplyWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
 const Survey = () => {
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const { answers, saveAnswers } = useContext(SurveyContext);
   const { questionNumber } = useParams();
   const questionNumberInt = parseInt(questionNumber);
   const prevQuestionNumber =
@@ -54,20 +78,34 @@ const Survey = () => {
     getData();
   }, []);
 
-  console.log("datasss", data);
-
   return (
     <SurveyContainer>
       <QuestionTitle>Question {questionNumber}</QuestionTitle>
       {isLoading && <Loader />}
       <QuestionContent>{data[questionNumber]} </QuestionContent>
-      <LinkWrapper>
-      <Link to={`/survey/${prevQuestionNumber}`}>Précédant</Link>
-      {nextQuestionNumber === 10 ? (
-        <Link to="/results">Résultats</Link>
-      ) : (
-        <Link to={`/survey/${nextQuestionNumber}`}>Suivant</Link>
+      {answers && (
+        <ReplyWrapper>
+          <ReplyBox
+            onClick={() => saveAnswers({ [questionNumber]: true })}
+            isSelected={answers[questionNumber] === true}
+          >
+            Oui
+          </ReplyBox>
+          <ReplyBox
+            onClick={() => saveAnswers({ [questionNumber]: false })}
+            isSelected={answers[questionNumber] === false}
+          >
+            Non
+          </ReplyBox>
+        </ReplyWrapper>
       )}
+      <LinkWrapper>
+        <Link to={`/survey/${prevQuestionNumber}`}>Précédant</Link>
+        {nextQuestionNumber === 10 ? (
+          <Link to="/results">Résultats</Link>
+        ) : (
+          <Link to={`/survey/${nextQuestionNumber}`}>Suivant</Link>
+        )}
       </LinkWrapper>
     </SurveyContainer>
   );
