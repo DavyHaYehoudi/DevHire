@@ -4,6 +4,7 @@ import colors from "../utils/style/colors";
 import Card from "../components/Card";
 import axios from "axios";
 import Loader from "../components/Loader";
+import { useTheme } from "../utils/style/theme";
 
 const CardsContainer = styled.div`
   display: grid;
@@ -15,17 +16,17 @@ const CardsContainer = styled.div`
 `;
 const PageTitle = styled.h1`
   font-size: 30px;
-  color: black;
   text-align: center;
   padding-bottom: 30px;
+  color: ${({ theme }) => (theme === 'light' ? '#000000' : '#ffffff')};
 `
 
 const PageSubtitle = styled.h2`
   font-size: 20px;
-  color: ${colors.secondary};
   font-weight: 300;
   text-align: center;
   padding-bottom: 30px;
+  color: ${({ theme }) => (theme === 'light' ? '#000000' : '#ffffff')};
 `
 const LoaderWrapper = styled.div`
   display: flex;
@@ -33,6 +34,7 @@ const LoaderWrapper = styled.div`
 `
 
 const Freelances = () => {
+  const{theme}=useTheme()
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
   const getData = async () => {
@@ -54,13 +56,13 @@ const Freelances = () => {
   
   return (
     <div>
-      <PageTitle>Trouvez votre prestataire</PageTitle>
-      <PageSubtitle>
+      <PageTitle theme={theme}>Trouvez votre prestataire</PageTitle>
+      <PageSubtitle theme={theme}>
         Chez Shiny nous réunissons les meilleurs profils pour vous.
       </PageSubtitle>
       {isLoading && 
       <LoaderWrapper>
-      <Loader />
+      <Loader theme={theme}/>
       </LoaderWrapper>
       }
       <CardsContainer>

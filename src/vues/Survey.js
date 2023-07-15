@@ -5,6 +5,7 @@ import styled from "styled-components";
 import colors from "../utils/style/colors";
 import Loader from "../components/Loader";
 import { SurveyContext } from "../utils/context";
+import { useTheme } from "../utils/style/theme";
 
 const SurveyContainer = styled.div`
   display: flex;
@@ -15,16 +16,18 @@ const SurveyContainer = styled.div`
 const QuestionTitle = styled.h2`
   text-decoration: underline;
   text-decoration-color: ${colors.primary};
+  color: ${({ theme }) => (theme === "light" ? "#000000" : "#ffffff")};
 `;
 
 const QuestionContent = styled.span`
   margin: 30px;
+  color: ${({ theme }) => (theme === "light" ? "#000000" : "#ffffff")};
 `;
 
 const LinkWrapper = styled.div`
   padding-top: 30px;
   & a {
-    color: black;
+    color: ${({ theme }) => (theme === "light" ? "#000000" : "#ffffff")};
   }
   & a:first-of-type {
     margin-right: 20px;
@@ -37,7 +40,9 @@ const ReplyBox = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${colors.backgroundLight};
+  background-color: ${({ theme }) =>
+    theme === "light" ? colors.backgroundLight : colors.backgroundDark};
+  color: ${({ theme }) => (theme === "light" ? "#000000" : "#ffffff")};
   border-radius: 30px;
   cursor: pointer;
   box-shadow: ${(props) =>
@@ -54,6 +59,7 @@ const ReplyWrapper = styled.div`
   flex-direction: row;
 `;
 const Survey = () => {
+  const { theme } = useTheme();
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const { answers, saveAnswers } = useContext(SurveyContext);
@@ -80,26 +86,28 @@ const Survey = () => {
 
   return (
     <SurveyContainer>
-      <QuestionTitle>Question {questionNumber}</QuestionTitle>
+      <QuestionTitle theme={theme}>Question {questionNumber}</QuestionTitle>
       {isLoading && <Loader />}
-      <QuestionContent>{data[questionNumber]} </QuestionContent>
+      <QuestionContent theme={theme}>{data[questionNumber]} </QuestionContent>
       {answers && (
         <ReplyWrapper>
           <ReplyBox
             onClick={() => saveAnswers({ [questionNumber]: true })}
             isSelected={answers[questionNumber] === true}
+            theme={theme}
           >
             Oui
           </ReplyBox>
           <ReplyBox
             onClick={() => saveAnswers({ [questionNumber]: false })}
             isSelected={answers[questionNumber] === false}
+            theme={theme}
           >
             Non
           </ReplyBox>
         </ReplyWrapper>
       )}
-      <LinkWrapper>
+      <LinkWrapper theme={theme}>
         <Link to={`/survey/${prevQuestionNumber}`}>Précédant</Link>
         {nextQuestionNumber === 10 ? (
           <Link to="/results">Résultats</Link>

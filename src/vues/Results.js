@@ -87,11 +87,6 @@ function Results() {
     getData();
   }, []);
 
-  //   const { data, isLoading, error } = useFetch(
-  //     `http://localhost:8000/results?${fetchParams}`
-  //   )
-
-  //   const resultsData = data?.resultsData;
 
   return isLoading ? (
     <LoaderWrapper>
@@ -101,7 +96,7 @@ function Results() {
     <ResultsContainer theme={theme}>
       <ResultsTitle theme={theme}>
         Les compétences dont vous avez besoin :
-        {data &&
+        {
           data.map((result, index) => (
             <JobTitle
               key={`result-title-${index}-${result.title}`}
@@ -116,7 +111,7 @@ function Results() {
         Découvrez nos profils
       </StyledLink>
       <DescriptionWrapper>
-        {data &&
+        {
           data.map((result, index) => (
             <JobDescription
               key={`result-detail-${index}-${result.title}`}
